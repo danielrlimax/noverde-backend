@@ -71,14 +71,18 @@ async function logSecurityEvent(
   details: Record<string, unknown>
 ): Promise<void> {
   try {
-    await supabaseAdmin.from('security_logs').insert({
-      ip_address: ip,
-      event_type: event,
-      details,
-      created_at: new Date().toISOString(),
-    });
+    // Só tenta logar se o Supabase estiver configurado
+    if (process.env.SUPABASE_URL) {
+      await supabaseAdmin.from('security_logs').insert({
+        ip_address: ip,
+        event_type: event,
+        details,
+        created_at: new Date().toISOString(),
+      });
+    }
   } catch (error) {
-    logger.error('Erro ao logar evento de segurança:', error);
+    // Não falha se não conseguir logar - apenas registra no console
+    logger.warn('Não foi possível logar evento de segurança:', { event, ip });
   }
 }
 

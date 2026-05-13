@@ -1,7 +1,10 @@
 import express from 'express';
 import morgan from 'morgan';
-import { env } from './config/env';
+import { env, validateEnv } from './config/env';
 import { testConnection } from './config/supabase';
+
+// Valida variáveis de ambiente em produção
+validateEnv();
 import { applySecurityMiddleware } from './middleware/security';
 import { firewall, validateRequestBody, limitBodyFields, enforceContentType } from './middleware/firewall';
 import { generalLimiter } from './middleware/rateLimiter';
